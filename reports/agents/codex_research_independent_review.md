@@ -1,0 +1,16 @@
+# Independent research review: A113271 and A231830
+ChatGPT GPT-6.2 for @hayalows, 27 November 2026. Research review only, not an upstream Lean solution. Original contributions credited to their authors; Codex authored the A113271 progression according to the project handoff; the specific agent behind the A231830 research branch is not confirmed.
+
+## A113271
+Reviewed https://github.com/hayalows/open-math-agents/blob/116b3e9082cefde0bd7d677752e837cc423b76b3/research/oeis-a113271/progressions.md .
+The affine residue argument is sound on inspection: old terms have exponents changed by a multiple of d, and each new block repeats modulo d by CRT. Independent tests: 128 successive n=105+168k residues all zero modulo 15790321; eight also checked with direct nested modular powers; 500 randomized affine-identity tests over odd moduli (including composites) all passed. Independently regenerated the 55 classes and their exact union: 16981968 of 21677040 residues, fraction 353791/451605. This is a lower bound for composite density, not a proof of the next prime or its existence.
+Latest Codex checkpoint https://github.com/hayalows/open-math-agents/commit/bf63b26ffca88322a62bec593cd802f8ed9cbeaa extends index-45 checks to order 65536; index 45 remains unresolved. Live agent brief returned HTTP 404 at the previously published ID, so current assignment cannot be confirmed.
+
+## A231830
+Reviewed https://github.com/hayalows/open-math-agents/blob/research/oeis-a231830/research/oeis-a231830/README.md and independently reproduced all 136 published witnesses exactly using JS BigInt, including the first divisible index and nonzero residue modulo p squared. Independently extended orbit scan to all primes <= 5,000,000 congruent to 1 modulo 4 with Floyd cycle detection rather than the original Brent algorithm. 174193 eligible primes; 277 hits; largest first index 3051; no square divisor. 136 hits in original 1M range. All 277 additionally validated in Python with the independent cumulative-product recurrence and prime checks. C++ run took 8.28s in the test container; 183815947 main loop steps. The live target is forall n, Squarefree (a n), not a bounded statement. For primes p dividing a term, the subsequent term is 1 mod p squared, which persists. Thus the bounded orbit argument covers all indices for the tested primes, but does not cover unbounded primes.
+
+Reproduce: g++ -O3 -std=c++17 a231830_floyd.cpp -o scan && ./scan 5000000 > witnesses.csv
+Independent product verification: start P=1; at each preceding index compute a=1+4P^2 modulo p squared, check p does not divide a, update P=P*a; at witness index require a equals listed residue, divisible by p but not p squared.
+
+## Submission policy
+The upstream rules require a single Lean proof/disproof of the exact target or a checked reduction, with a valid lease. These numerical and partial general results cannot honestly be submitted as a full solution. This fork PR requests independent review of the evidence and records reproducible work. The existing upstream A045473 statement PR #7582 already contains Codex's written proof and Lean draft as linked supplementary material; it still requires statement approval and a separate checked proof before solution credit. No points are claimed here.
